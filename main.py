@@ -3,6 +3,7 @@ from tkinter import ttk
 from expense import Expense  # Imports our Expense class
 from tkinter import messagebox  # Imports popup messages
 from database import Database  # Imports our Database class
+from datetime import date  # Imports date functionality
 expenses = []  # Stores Expense objects
 database = Database()  # Creates a Database object
 window = tk.Tk() # creates application main window 
@@ -146,11 +147,16 @@ def add_expense():
         category
     )  # Creates an Expense object
 
+    
+
     expenses.append(expense)  # Stores the Expense object
+    expense_date = date.today().isoformat()  # Gets today's date
+
     database.add_expense(
     expense.description,
     expense.amount,
-    expense.category
+    expense.category,
+    expense_date
 )  # Saves the expense to SQLite
     expense_table.insert(
         "",
@@ -158,7 +164,8 @@ def add_expense():
         values=(
             expense.description,
             f"R{expense.amount:.2f}",
-            expense.category
+            expense.category, 
+            expense_date
         )
     )  # Adds the expense to the table
 
@@ -184,7 +191,7 @@ add_button.pack(pady=10)  # Centers and positions the button
 # Expense Table 
 expense_table = ttk.Treeview(
     window,  # Places the table in the window
-    columns=("description", "amount", "category"),  # Creates three columns
+    columns=("description", "amount", "category", "date"),  # Creates three columns
     show="headings",  # Hides the default Treeview column
     height=8  # Sets the number of visible rows
 )
@@ -207,6 +214,13 @@ expense_table.heading(
     
 )  # Sets the third column heading
 
+expense_table.heading(
+    "date",
+    text="Date"
+)
+
+
+
 expense_table.column(
     "description",
     width=180,
@@ -221,9 +235,15 @@ expense_table.column(
 
 expense_table.column(
     "category",
-    width=150, 
+    width=140, 
     anchor="center"
 )  # Sets category column width
+
+expense_table.column(
+    "date",
+    width=120,
+    anchor="center"
+)
 
 expense_table.pack(pady=5)  # Displays the table
 
@@ -245,7 +265,7 @@ def load_expenses():
     total = 0  # Starts the total at zero
 
     for expense in saved_expenses:
-        expense_id, description, amount, category = expense  # Gets each value
+        expense_id, description, amount, category, expense_date = expense  # Gets each value
 
         expense_table.insert(
             "",
@@ -253,7 +273,8 @@ def load_expenses():
             values=(
                 description,
                 f"R{amount:.2f}",
-                category
+                category, 
+                expense_date
             )
         )  # Displays the expense in the table
 
