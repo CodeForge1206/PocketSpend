@@ -103,23 +103,7 @@ category_combobox = ttk.Combobox(
 category_combobox.pack(pady=5) # Positions the dropdown
 
 category_combobox.current(0) # Selects Food by default
-#Expense
-expenses_label = tk.Label(
-    window,  # Places the label inside the window
-    text="Expenses",  # Sets the section title
-    font=("Arial", 14, "bold")  # Makes the heading bold
-)
 
-expenses_label.pack(pady=(15, 5))  # Positions the heading
-
-
-expense_listbox = tk.Listbox(
-    window,  # Places the listbox inside the window
-    width=55,  # Sets the listbox width
-    height=8  # Sets the listbox height
-)
-
-expense_listbox.pack(pady=5)  # Positions the listbox
 
 #Expense Button 
 
@@ -162,10 +146,15 @@ def add_expense():
 
     expenses.append(expense)  # Stores the Expense object
 
-    expense_listbox.insert(
-        tk.END,
-        f"{expense.description} - R{expense.amount:.2f} - {expense.category}"
-    )  # Displays the expense in the listbox
+    expense_table.insert(
+    "",
+    tk.END,
+    values=(
+        expense.description,
+        f"R{expense.amount:.2f}",
+        expense.category
+    )
+)  # Adds the expense as a new table row
 add_button = tk.Button(
     window,  # Places the button in the main window
     text="Add Expense",  # Sets the button text
@@ -174,5 +163,46 @@ add_button = tk.Button(
 )
 
 add_button.pack(pady=10)  # Centers and positions the button
+
+# Expense Table 
+expense_table = ttk.Treeview(
+    window,  # Places the table in the window
+    columns=("description", "amount", "category"),  # Creates three columns
+    show="headings",  # Hides the default Treeview column
+    height=8  # Sets the number of visible rows
+)
+
+expense_table.heading(
+    "description",
+    text="Description"
+)  # Sets the first column heading
+
+expense_table.heading(
+    "amount",
+    text="Amount"
+)  # Sets the second column heading
+
+expense_table.heading(
+    "category",
+    text="Category"
+)  # Sets the third column heading
+
+expense_table.column(
+    "description",
+    width=180
+)  # Sets description column width
+
+expense_table.column(
+    "amount",
+    width=100
+)  # Sets amount column width
+
+expense_table.column(
+    "category",
+    width=150
+)  # Sets category column width
+
+expense_table.pack(pady=5)  # Displays the table
+
 # Keep the window running
 window.mainloop()
