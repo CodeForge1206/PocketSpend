@@ -1,5 +1,7 @@
 import tkinter as tk #Import python GUI library 
 from tkinter import ttk
+from expense import Expense  # Imports our Expense class
+expenses = []  # Stores Expense objects
 window = tk.Tk() # creates application main window 
 window.title("PocketSpend") #window title name 
 window.geometry("500x400")
@@ -102,14 +104,31 @@ category_combobox.pack(pady=5) # Positions the dropdown
 category_combobox.current(0) # Selects Food by default
 
 #Expense Button 
+
+def add_expense():
+    description = description_entry.get()  # Gets the description
+    amount = amount_entry.get()  # Gets the amount
+    category = category_combobox.get()  # Gets the selected category
+
+    expense = Expense(
+        description,
+        amount,
+        category
+    )  # Creates an Expense object
+
+    expenses.append(expense)  # Stores the Expense object
+
+    print(expense.description)  # Displays the description
+    print(expense.amount)  # Displays the amount
+    print(expense.category)  # Displays the category
+
 add_button = tk.Button(
     window,  # Places the button in the main window
-    text="Add Expense",   # Sets the button text
-    width=20  # Sets the button width
+    text="Add Expense",  # Sets the button text
+    width=20,  # Sets the button width
+    command=add_expense  # Runs add_expense when clicked
 )
 
 add_button.pack(pady=10)  # Centers and positions the button
-
-
 # Keep the window running
 window.mainloop()
