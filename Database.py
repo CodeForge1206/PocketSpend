@@ -42,6 +42,31 @@ class Database:
 
         self.connection.commit()  # Saves the expense
 
+        # -----------------------------
+    # Get Expenses
+    # -----------------------------
+
+    def get_expenses(self):
+        self.cursor.execute("""
+            SELECT id, description, amount, category
+            FROM expenses
+        """)  # Gets all expenses from the database
+
+        return self.cursor.fetchall()  # Returns the database records
+
+    # -----------------------------
+    # Get Total Spending
+    # -----------------------------
+
+    def get_total(self):
+        self.cursor.execute("""
+            SELECT SUM(amount)
+            FROM expenses
+        """)
+
+        total = self.cursor.fetchone()[0]
+
+        return total if total is not None else 0
 
     # -----------------------------
     # Close Database

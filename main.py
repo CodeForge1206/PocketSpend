@@ -162,7 +162,7 @@ def add_expense():
         )
     )  # Adds the expense to the table
 
-    total = sum(expense.amount for expense in expenses)  # Calculates total spending - Take the amount from every Expense object and add them together.
+    total = database.get_total()  # Gets the current total from the database
 
     total_label.config(
     text=f"Total Spent: R{total:.2f}"
@@ -176,6 +176,8 @@ add_button = tk.Button(
     width=20,  # Sets the button width
     command=add_expense  # Runs add_expense when clicked
 )
+
+
 
 add_button.pack(pady=10)  # Centers and positions the button
 
@@ -233,6 +235,36 @@ total_label = tk.Label(
 )
 
 total_label.pack(pady=10)  # Positions the total
+# -----------------------------
+# Load Expenses
+# -----------------------------
 
+def load_expenses():
+    saved_expenses = database.get_expenses()  # Gets expenses from the database
+
+    total = 0  # Starts the total at zero
+
+    for expense in saved_expenses:
+        expense_id, description, amount, category = expense  # Gets each value
+
+        expense_table.insert(
+            "",
+            tk.END,
+            values=(
+                description,
+                f"R{amount:.2f}",
+                category
+            )
+        )  # Displays the expense in the table
+
+        total += amount  # Adds the expense amount to the total
+
+    total_label.config(
+        text=f"Total Spent: R{total:.2f}"
+    )  # Displays the total
+
+
+
+load_expenses()  # Loads saved expenses when the app starts
 # Keep the window running
 window.mainloop()
