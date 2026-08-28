@@ -175,31 +175,37 @@ expense_table = ttk.Treeview(
 expense_table.heading(
     "description",
     text="Description"
+    
 )  # Sets the first column heading
 
 expense_table.heading(
     "amount",
     text="Amount"
+    
 )  # Sets the second column heading
 
 expense_table.heading(
     "category",
-    text="Category"
+    text="Category", 
+    
 )  # Sets the third column heading
 
 expense_table.column(
     "description",
-    width=180
+    width=180,
+    anchor="center"
 )  # Sets description column width
 
 expense_table.column(
     "amount",
-    width=100
+    width=100, 
+    anchor="center"
 )  # Sets amount column width
 
 expense_table.column(
     "category",
-    width=150
+    width=150, 
+    anchor="center"
 )  # Sets category column width
 
 expense_table.pack(pady=5)  # Displays the table
