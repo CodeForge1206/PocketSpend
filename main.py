@@ -145,16 +145,24 @@ def add_expense():
     )  # Creates an Expense object
 
     expenses.append(expense)  # Stores the Expense object
-
     expense_table.insert(
-    "",
-    tk.END,
-    values=(
-        expense.description,
-        f"R{expense.amount:.2f}",
-        expense.category
-    )
-)  # Adds the expense as a new table row
+        "",
+        tk.END,
+        values=(
+            expense.description,
+            f"R{expense.amount:.2f}",
+            expense.category
+        )
+    )  # Adds the expense to the table
+
+    total = sum(expense.amount for expense in expenses)  # Calculates total spending - Take the amount from every Expense object and add them together.
+
+    total_label.config(
+    text=f"Total Spent: R{total:.2f}"
+)  # Updates the total displayed on screen
+
+
+  # Adds the expense as a new table row
 add_button = tk.Button(
     window,  # Places the button in the main window
     text="Add Expense",  # Sets the button text
@@ -209,6 +217,15 @@ expense_table.column(
 )  # Sets category column width
 
 expense_table.pack(pady=5)  # Displays the table
+
+#Table Spent
+total_label = tk.Label(
+    window,  # Places the label in the main window
+    text="Total Spent: R0.00",  # Sets the starting total
+    font=("Arial", 12, "bold")  # Makes the total bold
+)
+
+total_label.pack(pady=10)  # Positions the total
 
 # Keep the window running
 window.mainloop()
