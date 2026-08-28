@@ -89,23 +89,24 @@ category_label = tk.Label(
 
 category_label.pack(anchor="w")  # Aligns the label to the left
 
-category_combobox = ttk.Combobox(
-    category_frame,  # Places the dropdown inside its frame
-    values=[  # Provides the available categories
-        "Food",
-        "Transport",
-        "Shopping",
-        "Entertainment",
-        "Bills",
-        "Other"
-    ],
-    state="readonly",  # Prevents users from typing their own category
-    width=22  # Sets the dropdown width
-)
+category_combo = ttk.Combobox(
+    window,
+    state="readonly",
+    width=15
+)  # Creates the category ComboBox
+category_combo.pack()  # Displays the ComboBox
+categories = database.get_categories()  # Gets categories from SQLite
 
-category_combobox.pack(pady=5) # Positions the dropdown
+category_names = [
+    category[1] for category in categories
+]  # Gets only the category names
 
-category_combobox.current(0) # Selects Food by default
+category_combo["values"] = category_names  # Loads categories into ComboBox
+
+category_combo.current(0)  # Selects the first category
+    
+
+
 
 
 #Expense Button 
@@ -113,7 +114,7 @@ category_combobox.current(0) # Selects Food by default
 def add_expense():
     description = description_entry.get()  # Gets the description
     amount = amount_entry.get()  # Gets the amount
-    category = category_combobox.get()  # Gets the selected category
+    category = category_combo.get()  # Gets the selected category
 
     # Check if the description is empty
     if description == "":
