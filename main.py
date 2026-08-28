@@ -2,7 +2,9 @@ import tkinter as tk #Import python GUI library
 from tkinter import ttk
 from expense import Expense  # Imports our Expense class
 from tkinter import messagebox  # Imports popup messages
+from database import Database  # Imports our Database class
 expenses = []  # Stores Expense objects
+database = Database()  # Creates a Database object
 window = tk.Tk() # creates application main window 
 window.title("PocketSpend") #window title name 
 window.geometry("500x400")
@@ -145,6 +147,11 @@ def add_expense():
     )  # Creates an Expense object
 
     expenses.append(expense)  # Stores the Expense object
+    database.add_expense(
+    expense.description,
+    expense.amount,
+    expense.category
+)  # Saves the expense to SQLite
     expense_table.insert(
         "",
         tk.END,
