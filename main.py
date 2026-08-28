@@ -1,6 +1,7 @@
 import tkinter as tk #Import python GUI library 
 from tkinter import ttk
 from expense import Expense  # Imports our Expense class
+from tkinter import messagebox  # Imports popup messages
 expenses = []  # Stores Expense objects
 window = tk.Tk() # creates application main window 
 window.title("PocketSpend") #window title name 
@@ -102,6 +103,23 @@ category_combobox = ttk.Combobox(
 category_combobox.pack(pady=5) # Positions the dropdown
 
 category_combobox.current(0) # Selects Food by default
+#Expense
+expenses_label = tk.Label(
+    window,  # Places the label inside the window
+    text="Expenses",  # Sets the section title
+    font=("Arial", 14, "bold")  # Makes the heading bold
+)
+
+expenses_label.pack(pady=(15, 5))  # Positions the heading
+
+
+expense_listbox = tk.Listbox(
+    window,  # Places the listbox inside the window
+    width=55,  # Sets the listbox width
+    height=8  # Sets the listbox height
+)
+
+expense_listbox.pack(pady=5)  # Positions the listbox
 
 #Expense Button 
 
@@ -109,6 +127,32 @@ def add_expense():
     description = description_entry.get()  # Gets the description
     amount = amount_entry.get()  # Gets the amount
     category = category_combobox.get()  # Gets the selected category
+
+    # Check if the description is empty
+    if description == "":
+        messagebox.showerror(
+            "Missing Description",
+            "Please enter an expense description."
+        )
+        return
+
+    # Check if the amount is a valid number
+    try:
+        amount = float(amount)
+    except ValueError:
+        messagebox.showerror(
+            "Invalid Amount",
+            "Please enter a valid amount."
+        )
+        return
+
+     # Check that the amount is greater than zero
+    if amount <= 0:
+        messagebox.showerror(
+            "Invalid Amount",
+            "Amount must be greater than zero."
+        )
+        return
 
     expense = Expense(
         description,
@@ -118,10 +162,10 @@ def add_expense():
 
     expenses.append(expense)  # Stores the Expense object
 
-    print(expense.description)  # Displays the description
-    print(expense.amount)  # Displays the amount
-    print(expense.category)  # Displays the category
-
+    expense_listbox.insert(
+        tk.END,
+        f"{expense.description} - R{expense.amount:.2f} - {expense.category}"
+    )  # Displays the expense in the listbox
 add_button = tk.Button(
     window,  # Places the button in the main window
     text="Add Expense",  # Sets the button text
