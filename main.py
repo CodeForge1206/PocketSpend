@@ -1,5 +1,115 @@
-import tkinter as tk 
-window = tk.Tk()
-window.title("PocketSpend")
+import tkinter as tk #Import python GUI library 
+from tkinter import ttk
+window = tk.Tk() # creates application main window 
+window.title("PocketSpend") #window title name 
 window.geometry("500x400")
+
+
+
+
+subtitle_label = tk.Label(
+    window, # Places the label inside the main window
+    text="Personal Expense Tracker",  # Sets the subtitle
+    font=("Arial", 12)  # Sets the font size
+)
+subtitle_label.pack(pady=(0, 20)) # Positions the subtitle
+
+#Imput Frame
+input_frame = tk.Frame(window)  # Creates a container for our inputs
+
+input_frame.pack() # Places the input container in the window
+
+#Description - LEFT
+description_frame = tk.Frame(input_frame) # Creates a container for description
+description_frame.grid(
+    row=0, # Places it in the first row
+    column=0, # Places it in the first column
+    padx=15,  # Adds horizontal spacing
+    pady=10  # Adds vertical spacing
+) 
+
+description_label = tk.Label(
+    description_frame, # Places the label inside its frame
+    text="Description" # Sets the label text
+)
+description_label.pack(anchor="w") # Aligns the label to the left
+
+description_entry = tk.Entry(
+    description_frame, # Places the input box inside its frame
+    width=20  # Sets the input box width
+)
+
+description_entry.pack(pady=5)  # Positions the input box
+
+#Amount - RIGHT 
+amount_frame = tk.Frame(input_frame)  # Creates a container for amount
+
+amount_frame.grid(
+    row=0,  # Places it in the first row
+    column=1,  # Places it in the second column
+    padx=15, # Adds horizontal spacing
+    pady=10 # Adds vertical spacing
+)
+
+amount_label = tk.Label(
+    amount_frame,  # Places the label inside its frame
+    text="Amount (R)"  # Sets the label text
+)
+
+amount_label.pack(anchor="w")  # Aligns the label to the left
+
+amount_entry = tk.Entry(
+    amount_frame, # Places the input box inside its frame
+    width=20 # Sets the input box width
+)
+
+amount_entry.pack(pady=5)  # Positions the input box
+
+#Category - LEFT 
+category_frame = tk.Frame(input_frame)  # Creates a container for category
+
+category_frame.grid(
+    row=1, # Places it in the second row
+    column=0,  # Places it in the first column
+    columnspan=2,  # Uses both columns
+    
+    pady=10 # Adds vertical spacing
+)
+
+category_label = tk.Label(
+    category_frame,  # Places the label inside its frame
+    text="Category"  # Sets the label text
+)
+
+category_label.pack(anchor="w")  # Aligns the label to the left
+
+category_combobox = ttk.Combobox(
+    category_frame,  # Places the dropdown inside its frame
+    values=[  # Provides the available categories
+        "Food",
+        "Transport",
+        "Shopping",
+        "Entertainment",
+        "Bills",
+        "Other"
+    ],
+    state="readonly",  # Prevents users from typing their own category
+    width=22  # Sets the dropdown width
+)
+
+category_combobox.pack(pady=5) # Positions the dropdown
+
+category_combobox.current(0) # Selects Food by default
+
+#Expense Button 
+add_button = tk.Button(
+    window,  # Places the button in the main window
+    text="Add Expense",   # Sets the button text
+    width=20  # Sets the button width
+)
+
+add_button.pack(pady=10)  # Centers and positions the button
+
+
+# Keep the window running
 window.mainloop()
