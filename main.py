@@ -153,11 +153,14 @@ def add_expense():
     expenses.append(expense)  # Stores the Expense object
     expense_date = date.today().isoformat()  # Gets today's date
 
+    category_id = database.get_category_id(expense.category) # Gets the category ID
+
     database.add_expense(
     expense.description,
     expense.amount,
     expense.category,
-    expense_date
+    expense_date, 
+    category_id
 )  # Saves the expense to SQLite
     expense_table.insert(
         "",

@@ -40,7 +40,8 @@ class Database:
             "Transport",
             "Entertainment",
             "Bills",
-            "Shopping"
+            "Shopping",
+            "Other"
         ]  # Creates our default categories
 
         for category in categories:
@@ -148,11 +149,11 @@ class Database:
     # Add Expense
     # -----------------------------
 
-    def add_expense(self, description, amount, category, date):
+    def add_expense(self, description, amount, category, date, category_id):
         self.cursor.execute("""
-            INSERT INTO expenses (description, amount, category, date)
-            VALUES (?, ?, ?, ?)
-        """, (description, amount, category, date))  # Adds the expense to the database
+            INSERT INTO expenses (description, amount, category, date, category_id)
+            VALUES (?, ?, ?, ?, ?)
+        """, (description, amount, category, date, category_id))  # Adds the expense to the database
 
         self.connection.commit()  # Saves the expense
 
@@ -194,6 +195,90 @@ class Database:
         """)  # Gets categories from the database
 
         return self.cursor.fetchall()  # Returns the categories
+
+    #Get category ID
+    def get_category_id(self, category_name):
+        self.cursor.execute(""" SELECT category_id FROM categories WHERE category_name = ? """, (category_name,)) #Finds the ID for the selected category 
+        result = self.cursor.fetchone() #Gets the matching category
+
+        if result:
+            return result[0] # Returns the category ID
+
+        return None # Returns nothing if the category does not exist
+
+    def add_other_category(self):
+        self.cursor.execute(
+        "INSERT INTO categories (category_name) VALUES (?)",
+        ("Other",)
+    )  # Adds Other to the categories table
+
+        self.connection.commit()  # Saves the change
+
+        # -----------------------------
+    # Reset Category IDs
+    # -----------------------------
+
+    def reset_categories(self):
+        # Temporarily turn off foreign key checking
+        self.cursor.execute("PRAGMA foreign_keys = OFF")
+
+        # Remove the unwanted category
+        self.cursor.execute("""
+            DELETE FROM categories
+            WHERE category_name = 'ShoppingOther'
+        """)
+
+        # Change Other to a temporary name
+        self.cursor.execute("""
+            UPDATE categories
+            SET category_name = 'OtherTemp'
+            WHERE category_name = 'Other'
+        """)
+
+        # Change the category IDs to their correct values
+        self.cursor.execute("""
+            UPDATE categories
+            SET category_id = CASE category_name
+                WHEN 'Food' THEN 1
+                WHEN 'Transport' THEN 2
+                WHEN 'Entertainment' THEN 3
+                WHEN 'Bills' THEN 4
+                WHEN 'Shopping' THEN 5
+                WHEN 'OtherTemp' THEN 6
+            END
+        """)
+
+        # Change Other back to its normal name
+        self.cursor.execute("""
+            UPDATE categories
+            SET category_name = 'Other'
+            WHERE category_name = 'OtherTemp'
+        """)
+
+        # Update existing expenses to match the new IDs
+        self.cursor.execute("""
+            UPDATE expenses
+            SET category_id = (
+                SELECT category_id
+                FROM categories
+                WHERE categories.category_name = expenses.category
+            )
+        """)
+
+        self.connection.commit()  # Saves all changes
+
+        # Turn foreign key checking back on
+        self.cursor.execute("PRAGMA foreign_keys = ON") 
+
+    def remove_shopping_other(self):
+        self.cursor.execute("""
+        DELETE FROM categories
+        WHERE category_name = 'ShoppingOther'
+    """)  # Removes the accidental category
+
+        self.connection.commit()  # Saves the change
+
+        
 
     # -----------------------------
     # Close Database
