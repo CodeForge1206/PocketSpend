@@ -9,6 +9,7 @@ class Database:
     # Creates a connection to the database
     def __init__(self):
         self.connection = sqlite3.connect("pocketspend.db")
+        self.connection.execute("PRAGMA foreign_keys = ON")
         self.cursor = self.connection.cursor()
 
         self.create_table()  # Creates the expenses table
@@ -163,7 +164,7 @@ class Database:
 
     def get_expenses(self):
         self.cursor.execute("""
-            SELECT id, description, amount, category, date
+            SELECT id, description, amount, category, date, category_id
             FROM expenses
         """)  # Gets all expenses from the database
 
@@ -218,66 +219,8 @@ class Database:
     # Reset Category IDs
     # -----------------------------
 
-    def reset_categories(self):
-        # Temporarily turn off foreign key checking
-        self.cursor.execute("PRAGMA foreign_keys = OFF")
-
-        # Remove the unwanted category
-        self.cursor.execute("""
-            DELETE FROM categories
-            WHERE category_name = 'ShoppingOther'
-        """)
-
-        # Change Other to a temporary name
-        self.cursor.execute("""
-            UPDATE categories
-            SET category_name = 'OtherTemp'
-            WHERE category_name = 'Other'
-        """)
-
-        # Change the category IDs to their correct values
-        self.cursor.execute("""
-            UPDATE categories
-            SET category_id = CASE category_name
-                WHEN 'Food' THEN 1
-                WHEN 'Transport' THEN 2
-                WHEN 'Entertainment' THEN 3
-                WHEN 'Bills' THEN 4
-                WHEN 'Shopping' THEN 5
-                WHEN 'OtherTemp' THEN 6
-            END
-        """)
-
-        # Change Other back to its normal name
-        self.cursor.execute("""
-            UPDATE categories
-            SET category_name = 'Other'
-            WHERE category_name = 'OtherTemp'
-        """)
-
-        # Update existing expenses to match the new IDs
-        self.cursor.execute("""
-            UPDATE expenses
-            SET category_id = (
-                SELECT category_id
-                FROM categories
-                WHERE categories.category_name = expenses.category
-            )
-        """)
-
-        self.connection.commit()  # Saves all changes
-
-        # Turn foreign key checking back on
-        self.cursor.execute("PRAGMA foreign_keys = ON") 
-
-    def remove_shopping_other(self):
-        self.cursor.execute("""
-        DELETE FROM categories
-        WHERE category_name = 'ShoppingOther'
-    """)  # Removes the accidental category
-
-        self.connection.commit()  # Saves the change
-
+    
+    
         
 
     # -----------------------------

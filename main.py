@@ -269,7 +269,7 @@ def load_expenses():
     total = 0  # Starts the total at zero
 
     for expense in saved_expenses:
-        expense_id, description, amount, category, expense_date = expense  # Gets each value
+        expense_id, description, amount, category, expense_date, category_id = expense  # Gets each value
 
         expense_table.insert(
             "",
